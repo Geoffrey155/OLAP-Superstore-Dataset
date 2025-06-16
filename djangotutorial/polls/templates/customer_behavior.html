@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Behavior and Clustering</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .visualization {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .visualization canvas {
+            max-width: auto; 
+            height: auto;  
+        }
+        .nav-buttons {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: 20px;
+        }
+        .nav-buttons a {
+            font-size: 16px;
+            margin-right: 15px;
+            text-decoration: none;
+            padding: 10px;
+            background-color: #5A2D82;
+            color: white;
+            border-radius: 5px;
+        }
+        .nav-buttons a:hover {
+            background-color: #3a1d59;
+        }
+        .cluster-legend {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .cluster-legend div {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        .cluster-legend .color-box {
+            width: 30px;
+            height: 10px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clustering of Total Profit per Region</h1>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="http://127.0.0.1:8000/discount_impact/">Discount Impact</a>
+            <a href="http://127.0.0.1:8000/cluster_products/">Clustering Products</a>
+        </div>
+
+        <!-- Keterangan Cluster  -->
+        <div class="cluster-legend">
+            <div>
+                <span class="color-box" style="background-color: rgba(255, 99, 132, 1);"></span> Cluster 0 
+                <span class="color-box" style="background-color: rgba(54, 162, 235, 1);"></span> Cluster 1 
+                <span class="color-box" style="background-color: rgba(255, 205, 86, 1);"></span> Cluster 2 
+            </div>
+        </div>
+
+        <div class="visualization">
+            <canvas id="profitChart"></canvas>
+        </div>
+
+        <script>
+            var ctx = document.getElementById('profitChart').getContext('2d');
+            var chartData = {{ chart_data|safe }};
+            
+            var profitChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.regions,
+                    datasets: [{
+                        label: 'Total Profit',
+                        data: chartData.profits,
+                        backgroundColor: chartData.clusters.map(function(cluster) {
+                            // Warna berdasarkan cluster
+                            if (cluster === 0) return 'rgba(255, 99, 132, 1)';  // Merah
+                            if (cluster === 1) return 'rgba(54, 162, 235, 1)';  // Biru
+                            return 'rgba(255, 205, 86, 1)';  // Kuning
+                        }),
+                        borderColor: chartData.clusters.map(function(cluster) {
+                            // Border warna sesuai dengan cluster
+                            if (cluster === 0) return 'rgba(255, 99, 132, 1)';  // Merah
+                            if (cluster === 1) return 'rgba(54, 162, 235, 1)';  // Biru
+                            return 'rgba(255, 205, 86, 1)';  // Kuning
+                        }),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Total Profit'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

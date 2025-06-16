@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Impact</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .visualization {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .visualization canvas {
+            max-width: auto; 
+            height: auto;  
+        }
+        .nav-buttons {
+            text-align: left;
+            margin-top: 30px;
+            margin-left: 20px;
+        }
+        .nav-buttons a {
+            font-size: 16px;
+            margin-right: 15px;
+            text-decoration: none;
+            padding: 10px;
+            background-color: #5A2D82;
+            color: white;
+            border-radius: 5px;
+        }
+        .nav-buttons a:hover {
+            background-color: #3a1d59;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Impact of Discounts on Sales</h1>
+
+        <!-- Tombol Navigasi -->
+        <div class="nav-buttons">
+            <!-- URL ke halaman lain -->
+            <a href="http://127.0.0.1:8000/cluster_products/">Cluster Products</a>
+            <a href="http://127.0.0.1:8000/customer_behavior_trend/">Clustering Profit</a>
+        </div>
+
+        <div class="visualization">
+            <canvas id="discountChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('discountChart').getContext('2d');
+        var chartData = {{ chart_data|safe }};
+
+        var discountChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.discounts,
+                datasets: [{
+                    label: 'Actual Sales',
+                    data: chartData.actual_sales,
+                    borderColor: 'rgba(0, 255, 255, 1)',  // Warna hijau toska untuk garis Actual Sales
+                    fill: false,
+                    borderWidth: 2
+                }, {
+                    label: 'Trend Line',
+                    data: chartData.trend_line,
+                    borderColor: 'rgba(255, 99, 132, 1)', // Warna merah untuk garis Trend Line
+                    fill: false,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Discount'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Sales'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
